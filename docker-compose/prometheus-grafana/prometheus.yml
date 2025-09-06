@@ -1,0 +1,19 @@
+global:
+  scrape_interval: 1s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+  - job_name: 'registry-service-app'
+    metrics_path: '/iot-registry/actuator/prometheus'
+    static_configs:
+      - targets: ['${HOSTNAME}:8080']
+  - job_name: 'telemetries-persister-app'
+    metrics_path: '/telemetries-persister/actuator/prometheus'
+    static_configs:
+      - targets: ['${HOSTNAME}:8082']
+  - job_name: 'analytic-visualisation-service-app'
+    metrics_path: '/avs/actuator/prometheus'
+    static_configs:
+      - targets: ['${HOSTNAME}:8083']
