@@ -1,2 +1,3 @@
 /docker-compose/schema-registry/.env
 /docker-compose/prometheus-grafana/.env
+/docker-compose/redis/.env
