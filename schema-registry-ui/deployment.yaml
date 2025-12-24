@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: schema-registry-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: schema-registry-ui
+  template:
+    metadata:
+      labels:
+        app: schema-registry-ui
+    spec:
+      containers:
+        - name: schema-registry-ui
+          image: landoop/schema-registry-ui:0.9.5
+          ports:
+            - containerPort: 8000
+          env:
+            - name: SCHEMAREGISTRY_URL
+              value: http://schema-registry:8081
+            - name: PROXY
+              value: "true"
