@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dind
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dind
+  template:
+    metadata:
+      labels:
+        app: dind
+    spec:
+      dnsPolicy: ClusterFirst
+      containers:
+        - name: dind
+          image: docker:26-dind
+          securityContext:
+            privileged: true
+          env:
+            - name: DOCKER_TLS_CERTDIR
+              value: ""
+          ports:
+            - containerPort: 2375
+          volumeMounts:
+            - name: docker-graph
+              mountPath: /var/lib/docker
+      volumes:
+        - name: docker-graph
+          emptyDir: {}
