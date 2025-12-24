@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nexus
+  labels:
+    app: nexus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nexus
+  template:
+    metadata:
+      labels:
+        app: nexus
+    spec:
+      containers:
+        - name: nexus
+          image: sonatype/nexus3:latest
+          ports:
+            - containerPort: 8081
+          resources:
+            limits:
+              memory: "2Gi"
+              cpu: "500m"
+            requests:
+              memory: "1Gi"
+              cpu: "100m"
+          volumeMounts:
+            - name: nexus-data
+              mountPath: /nexus-data
+            - name: tls-keypair
+              mountPath: /etc/ssl/nexus
+          env:
+            - name: NEXUS_KEYSTORE_FILE
+              value: "/etc/ssl/nexus/tls.jks"
+            - name: NEXUS_KEYSTORE_PASSWORD
+              value: "changeit"
+            - name: INSTALL4J_ADD_VM_PARAMS
+              value: "-Xms1g -Xmx2g -Dkaraf.data=/nexus-data -Djava.util.prefs.userRoot=/nexus-data/javaprefs"
+      volumes:
+        - name: nexus-data
+          persistentVolumeClaim:
+            claimName: nexus-pvc
+        - name: tls-keypair
+          secret:
+              secretName: nexus-tls-secret
