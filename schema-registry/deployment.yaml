@@ -27,9 +27,9 @@ spec:
             - name: SCHEMA_REGISTRY_LISTENERS
               value: http://0.0.0.0:8081
             - name: KAFKASTORE_BOOTSTRAP_SERVERS
-              value: PLAINTEXT://kafka-service:9092
+              value: PLAINTEXT://kafka-svc:9092
             - name: SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS
-              value: PLAINTEXT://kafka-service:9092
+              value: PLAINTEXT://kafka-svc:9092
             - name: SCHEMA_REGISTRY_KAFKASTORE_TOPIC_REPLICATION_FACTOR
               value: "1"
             - name: SCHEMA_REGISTRY_ACCESS_CONTROL_ALLOW_METHODS
@@ -38,13 +38,17 @@ spec:
               value: "*"
           readinessProbe:
             httpGet:
-              path: /
+              path: /subjects
               port: 8081
             initialDelaySeconds: 30
             periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 5
           livenessProbe:
             httpGet:
-              path: /
+              path: /subjects
               port: 8081
-            initialDelaySeconds: 30
+            initialDelaySeconds: 45
             periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 5

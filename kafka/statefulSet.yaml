@@ -3,7 +3,7 @@ kind: StatefulSet
 metadata:
   name: kafka
 spec:
-  serviceName: "kafka-service"
+  serviceName: kafka-svc
   replicas: 1
   selector:
     matchLabels:
@@ -40,7 +40,7 @@ spec:
             - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
               value: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT"
             - name: KAFKA_ADVERTISED_LISTENERS
-              value: "PLAINTEXT://kafka-service:9092,CONTROLLER://kafka-0:9093"
+              value: "PLAINTEXT://kafka-svc:9092,CONTROLLER://kafka-0:9093"
             - name: KAFKA_LOG_DIRS
               value: "/var/lib/kafka/data"
             - name: CLUSTER_ID
@@ -53,6 +53,20 @@ spec:
               value: "1"
             - name: KAFKA_TRANSACTION_STATE_LOG_MIN_ISR
               value: "1"
+          readinessProbe:
+            tcpSocket:
+              port: 9092
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
+          livenessProbe:
+            tcpSocket:
+              port: 9092
+            initialDelaySeconds: 90
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 6
       volumes:
         - name: kafka-storage
           persistentVolumeClaim:
