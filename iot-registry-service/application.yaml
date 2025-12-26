@@ -1,0 +1,142 @@
+server:
+  servlet:
+    context-path: /iot-registry
+  port: 8080
+spring:
+  application:
+    name: registry-service
+  data:
+    web:
+      pageable:
+        default-page-size: 20
+        max-page-size: 100
+  datasource:
+    url: jdbc:postgresql://postgres-svc:5432/iot_registry
+    username: ihor
+    password: qwerty
+    driver-class-name: org.postgresql.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      pool-name: RegistryServiceHikariCP
+      minimum-idle: 5
+      maximum-pool-size: 20
+      auto-commit: true
+      connection-timeout: 30000
+      idle-timeout: 600000
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        jdbc.batch_size: 50
+        order_inserts: true
+        order_updates: true
+        generate_statistics: false
+    open-in-view: false
+  devtools:
+    restart:
+      enabled: false
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  health:
+    db:
+      enabled: true
+  metrics:
+    data.repository.autotime.enabled: true
+security:
+  jwt:
+    secret-key: "13a8b2d1c07c049de2422639fccbd453a0460e93c576adb3ef86209dd5a8a0eb"
+    expiration: 86400000 # day
+    refresh-token.expiration: 604800000 # week
+resilience4j:
+  ratelimiter:
+    instances:
+      get_device_limiter:
+        limitForPeriod: 1000       # Max calls per period
+        limitRefreshPeriod: 1s     # Period
+        timeoutDuration: 0
+kafka:
+  consumer:
+    topic: iot-devices-data
+    poll-timeout-ms: 2000
+    restart-timeout-ms: 10000
+    executor-termination-timeout-ms: 5000
+    properties:
+      bootstrap.servers: kafka-svc:9092
+      group.id: iot-devices-telemetry
+      key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value.deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      schema.registry.url: http://schema-registry:8081
+      specific.avro.reader: true
+      auto.offset.reset: earliest
+      enable.auto.commit: false
+      max.poll.records: 10000
+      max.poll.interval: 300000
+      fetch.min.bytes: 128
+      fetch.max.wait.ms: 5000
+      value.subject.name.strategy: io.confluent.kafka.serializers.subject.RecordNameStrategy
+  producer:
+    dead-letter:
+      topic: dead-letter-telemetries-updates
+      executor-termination-timeout-ms: 5000
+      properties:
+        bootstrap.servers: kafka-svc:9092
+        key.serializer: org.apache.kafka.common.serialization.StringSerializer
+        value.serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+        schema.registry.url: http://schema-registry:8081
+        acks: all
+        linger.ms: 10
+        batch.size: 32768
+        compression.type: snappy
+        retries: 3
+        retry.backoff.ms: 100
+        enable.idempotence: true
+        request.timeout.ms: 15000
+        delivery.timeout.ms: 30000
+        client.id: dead-letter-producer
+        auto.register.schemas: false
+    alerting-rules:
+      topic: iot-alerting-rules
+      executor-termination-timeout-ms: 5000
+      properties:
+        bootstrap.servers: kafka-svc:9092
+        key.serializer: org.apache.kafka.common.serialization.StringSerializer
+        value.serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+        schema.registry.url: http://schema-registry:8081
+        transactional.id: alert-rules-transactional-producer-0
+        acks: all
+        linger.ms: 10
+        batch.size: 32768
+        compression.type: snappy
+        retries: 3
+        retry.backoff.ms: 100
+        enable.idempotence: true
+        request.timeout.ms: 15000
+        delivery.timeout.ms: 30000
+        client.id: alerting-rules-producer
+        auto.register.schemas: false
+        value.subject.name.strategy: io.confluent.kafka.serializers.subject.RecordNameStrategy
+parallel.patcher:
+  threads.amount: 10
+  threads.virtual: true
+  executor.termination.time.ms: 5000
+persister:
+  retries:
+    max.attempts: 15
+    wait.duration.ms: 3000
+cache:
+  initial.capacity: 10
+  max.size: 500
+  expiration.time.min: 1
+#logging:
+#  level:
+#    org.hibernate.SQL: DEBUG
+#    org.hibernate.orm.jdbc.bind: TRACE
+#    org.springframework.transaction: DEBUG
+#    org.springframework.orm.jpa: DEBUG

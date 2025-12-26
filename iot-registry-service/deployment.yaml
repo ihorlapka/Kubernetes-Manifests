@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: registry-service
+  labels:
+    app: registry-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: registry-service
+  template:
+    metadata:
+      labels:
+        app: registry-service
+    spec:
+      containers:
+        - name: registry-service
+          image: ihorlapka/iot-registry-service:latest
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: app-config
+              mountPath: /config/application.yaml
+              subPath: application.yaml
+          env:
+            - name: JAVA_OPTS
+              value: "-Xms512m -Xmx1024m -XX:+UseG1GC"
+            - name: SPRING_CONFIG_LOCATION
+              value: "file:/config/"
+            - name: SPRING_PROFILES_ACTIVE
+              value: "stage"
+          resources:
+            limits:
+              memory: 1Gi
+              cpu: 500m
+            requests:
+              memory: 512Mi
+              cpu: 250m
+          readinessProbe:
+            httpGet:
+              path: /iot-registry/actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /iot-registry/actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 450
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 6
+      imagePullSecrets:
+        - name: dockercred
+      volumes:
+        - name: app-config
+          configMap:
+            name: registry-config
