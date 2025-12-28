@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: simulator-ingress
+spec:
+  rules:
+    - host: iot.local
+      http:
+        paths:
+          - path: /iot-device-connector
+            pathType: Prefix
+            backend:
+              service:
+                name: simulator-svc-dev
+                port:
+                  number: 8086

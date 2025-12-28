@@ -1,24 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: registry-service
-  labels:
-    app: registry-service
+  name: simulator
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      app: registry-service
   template:
-    metadata:
-      labels:
-        app: registry-service
     spec:
       containers:
-        - name: registry-service
-          image: ihorlapka/iot-registry-service:latest
+        - name: simulator
+          image: ihorlapka/iot-simulator:latest
           ports:
-            - containerPort: 8080
+            - containerPort: 8086
           volumeMounts:
             - name: app-config
               mountPath: /config/application.yaml
@@ -29,7 +21,13 @@ spec:
             - name: SPRING_CONFIG_LOCATION
               value: "file:/config/"
             - name: SPRING_PROFILES_ACTIVE
-              value: "stage"
+              value: "dev"
+            - name: USERNAME
+              value: "simulator_app"
+            - name: PASSWORD
+              value: "simulator_123"
+            - name: REGISTRY_BASE_URL
+              value: "http://registry-svc-dev:8080"
           resources:
             limits:
               memory: 1Gi
@@ -39,17 +37,17 @@ spec:
               cpu: 250m
           readinessProbe:
             httpGet:
-              path: /iot-registry/actuator/health/readiness
-              port: 8080
-            initialDelaySeconds: 30
+              path: /iot-device-connector/actuator/health/readiness
+              port: 8086
+            initialDelaySeconds: 60
             periodSeconds: 5
             timeoutSeconds: 2
             failureThreshold: 6
           livenessProbe:
             httpGet:
-              path: /iot-registry/actuator/health/liveness
-              port: 8080
-            initialDelaySeconds: 450
+              path: /iot-device-connector/actuator/health/liveness
+              port: 8086
+            initialDelaySeconds: 80
             periodSeconds: 10
             timeoutSeconds: 2
             failureThreshold: 6
@@ -58,4 +56,4 @@ spec:
       volumes:
         - name: app-config
           configMap:
-            name: registry-config
+            name: simulator-config

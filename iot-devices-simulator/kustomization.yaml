@@ -1,0 +1,17 @@
+resources:
+  - deployment.yaml
+  - service.yaml
+  - ingress.yaml
+
+labels:
+  - pairs:
+      app: simulator-dev
+    includeSelectors: true
+
+nameSuffix:
+  -dev
+
+configMapGenerator:
+  - name: simulator-config
+    files:
+      - application.yaml

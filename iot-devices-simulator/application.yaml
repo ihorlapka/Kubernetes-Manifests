@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: iot-devices-simulator
+server:
+  port: 8086
+  servlet:
+    context-path: /iot-device-connector
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+kafka:
+  producer:
+    topic: iot-devices-data
+    properties:
+      bootstrap.servers: kafka-svc:9092
+      key.serializer: org.apache.kafka.common.serialization.StringSerializer
+      value.serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      schema.registry.url: http://schema-registry-svc:8081
+      value.subject.name.strategy: io.confluent.kafka.serializers.subject.RecordNameStrategy
+      auto.register.schemas: false
