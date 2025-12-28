@@ -4,8 +4,6 @@ metadata:
   name: registry-svc
 spec:
   type: ClusterIP
-  selector:
-    app: registry-service
   ports:
     - protocol: TCP
       port: 8080

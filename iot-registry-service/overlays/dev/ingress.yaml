@@ -11,6 +11,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: registry-svc
+                name: registry-svc-dev
                 port:
                   number: 8080
