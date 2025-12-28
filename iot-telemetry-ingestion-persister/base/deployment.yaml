@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: telemetries-persister
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+        - name: telemetries-persister
+          image: ihorlapka/iot-telemetry-ingestion-service:latest
+          ports:
+            - containerPort: 8082
+          volumeMounts:
+            - name: app-config
+              mountPath: /config/application.yaml
+              subPath: application.yaml
+          env:
+            - name: JAVA_OPTS
+              value: "-Xms512m -Xmx1024m -XX:+UseG1GC"
+            - name: SPRING_CONFIG_LOCATION
+              value: "file:/config/"
+            - name: SPRING_PROFILES_ACTIVE
+              value: "dev,mongoTemplate"
+          resources:
+            limits:
+              memory: 1Gi
+              cpu: 500m
+            requests:
+              memory: 512Mi
+              cpu: 250m
+          readinessProbe:
+            httpGet:
+              path: /telemetries-persister/actuator/health/readiness
+              port: 8082
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /telemetries-persister/actuator/health/liveness
+              port: 8082
+            initialDelaySeconds: 300
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 6
+      imagePullSecrets:
+        - name: dockercred
+      volumes:
+        - name: app-config
+          configMap:
+            name: telemetries-persister-config

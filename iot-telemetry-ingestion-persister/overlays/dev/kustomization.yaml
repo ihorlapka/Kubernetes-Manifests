@@ -1,0 +1,11 @@
+resources:
+  - ../../base
+  - ingress.yaml
+
+nameSuffix:
+  -dev
+
+configMapGenerator:
+  - name: telemetries-persister-config
+    files:
+      - application.yaml
