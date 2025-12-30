@@ -1,0 +1,8 @@
+resources:
+  - statefulSet.yaml
+  - service.yaml
+
+labels:
+  - pairs:
+      app: redis
+    includeSelectors: true

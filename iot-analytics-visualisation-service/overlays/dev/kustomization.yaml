@@ -1,0 +1,11 @@
+resources:
+  - ../../base
+  - ingress.yaml
+
+nameSuffix:
+  -dev
+
+configMapGenerator:
+  - name: analytics-visualisation-config
+    files:
+      - application.yaml

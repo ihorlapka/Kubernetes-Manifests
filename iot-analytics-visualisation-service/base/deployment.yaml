@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: analytics-visualisation-service
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+        - name: analytics-visualisation-service
+          image: ihorlapka/iot-analytics-visualisation-service:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8084
+          volumeMounts:
+            - name: app-config
+              mountPath: /config/application.yaml
+              subPath: application.yaml
+          env:
+            - name: JAVA_OPTS
+              value: "-Xms512m -Xmx1024m -XX:+UseG1GC"
+            - name: SPRING_CONFIG_LOCATION
+              value: "file:/config/"
+            - name: SPRING_PROFILES_ACTIVE
+              value: "dev"
+            - name: POSTGRES_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: password
+            - name: MONGO_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: MONGO_INITDB_ROOT_USERNAME
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: MONGO_INITDB_ROOT_PASSWORD
+          resources:
+            limits:
+              memory: 1Gi
+              cpu: 500m
+            requests:
+              memory: 512Mi
+              cpu: 250m
+          readinessProbe:
+            httpGet:
+              path: /avs/actuator/health/readiness
+              port: 8084
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 6
+          livenessProbe:
+            httpGet:
+              path: /avs/actuator/health/liveness
+              port: 8084
+            initialDelaySeconds: 300
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 6
+      imagePullSecrets:
+        - name: dockercred
+      volumes:
+        - name: app-config
+          configMap:
+            name: analytics-visualisation-config

@@ -1,0 +1,80 @@
+server:
+  port: 8084
+spring:
+  webflux:
+    base-path: /avs
+  application:
+    name: analytics-visualisation-service
+  data:
+    web:
+      pageable:
+        default-page-size: 20
+        max-page-size: 100
+    mongodb:
+      uuid-representation: standard
+      uri: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongodb-svc:27017/telemetry-events?authSource=admin
+      connect-timeout: 10s
+      socket-timeout: 5s
+      min-connections-per-host: 5
+      max-connections-per-host: 50
+      max-wait-time: 120s
+      heartbeat-frequency: 5s
+  r2dbc:
+    url: r2dbc:postgresql://postgres-svc:5432/iot_registry
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
+    pool:
+      initial-size: 5
+      max-size: 20
+      max-idle-time: 30s
+      max-create-connection-time: 10s
+  redis:
+    host: redis-svc
+    port: 6379
+    password: qwerty
+    redisson:
+      config: |
+        singleServerConfig:
+          address: "redis://redis-svc:6379"
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  metrics:
+    data.repository.autotime.enabled: true
+  health:
+    diskspace:
+      path: /
+      threshold: 1GB
+security:
+  jwt:
+    secret-key: "13a8b2d1c07c049de2422639fccbd453a0460e93c576adb3ef86209dd5a8a0eb"
+    expiration: 86400000 # day
+    refresh-token.expiration: 604800000 # week
+kafka:
+  consumer:
+    topic: iot-devices-data
+    poll-limit-rate: 500
+    backoff-time-seconds: 5
+    max-backoff-time-seconds: 60
+    properties:
+      bootstrap.servers: kafka-svc:9092
+      group.id: alerts
+      key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value.deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      schema.registry.url: http://schema-registry-svc:8081
+      specific.avro.reader: true
+      auto.offset.reset: earliest
+      enable.auto.commit: false
+      max.poll.records: 10000
+      max.poll.interval: 300000
+      fetch.min.bytes: 128
+      fetch.max.wait.ms: 5000
+      value.subject.name.strategy: io.confluent.kafka.serializers.subject.RecordNameStrategy
+cache:
+  expiration.time.min: 5
+logging:
+  level:
+    org.springframework.transaction: DEBUG
+    org.springframework.orm.jpa: DEBUG
