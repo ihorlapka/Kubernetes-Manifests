@@ -22,6 +22,16 @@ spec:
               value: "file:/config/"
             - name: SPRING_PROFILES_ACTIVE
               value: "dev"
+            - name: POSTGRES_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: password
           resources:
             limits:
               memory: 1Gi

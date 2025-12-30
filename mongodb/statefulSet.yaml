@@ -17,7 +17,7 @@ spec:
                 name: mongo-secret
           volumeMounts:
             - name: mongo-data
-              mountPath: /var/lib/mongodb/kube-data
+              mountPath: /data/db
           readinessProbe:
             exec:
               command:

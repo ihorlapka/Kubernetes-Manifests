@@ -14,7 +14,7 @@ spring:
   data:
     mongodb:
       uuid-representation: standard
-      uri: mongodb://telemetries-persister-svc-dev:27017/telemetry-events
+      uri: mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@mongodb-svc:27017/telemetry-events?authSource=admin
       connect-timeout: 10s
       socket-timeout: 5s
       min-connections-per-host: 5

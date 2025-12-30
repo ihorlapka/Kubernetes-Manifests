@@ -8,7 +8,8 @@ spec:
     spec:
       containers:
         - name: telemetries-persister
-          image: ihorlapka/iot-telemetry-ingestion-service:latest
+          image: ihorlapka/iot-telemetry-ingestion-service:3
+          imagePullPolicy: Always
           ports:
             - containerPort: 8082
           volumeMounts:
@@ -22,6 +23,16 @@ spec:
               value: "file:/config/"
             - name: SPRING_PROFILES_ACTIVE
               value: "dev,mongoTemplate"
+            - name: MONGO_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: MONGO_INITDB_ROOT_USERNAME
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: MONGO_INITDB_ROOT_PASSWORD
           resources:
             limits:
               memory: 1Gi

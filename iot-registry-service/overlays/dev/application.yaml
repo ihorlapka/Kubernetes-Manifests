@@ -12,8 +12,8 @@ spring:
         max-page-size: 100
   datasource:
     url: jdbc:postgresql://postgres-svc:5432/iot_registry
-    username: ihor
-    password: qwerty
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
