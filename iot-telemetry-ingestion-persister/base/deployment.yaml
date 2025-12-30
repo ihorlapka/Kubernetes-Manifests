@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
         - name: telemetries-persister
-          image: ihorlapka/iot-telemetry-ingestion-service:3
+          image: ihorlapka/iot-telemetry-ingestion-service:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8082
