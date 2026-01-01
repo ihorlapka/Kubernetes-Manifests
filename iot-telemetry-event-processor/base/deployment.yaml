@@ -1,17 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: simulator
+  name: telemetry-events-processor
 spec:
   replicas: 1
   template:
     spec:
       containers:
-        - name: simulator
-          image: ihorlapka/iot-simulator:latest
-          imagePullPolicy: Always
+        - name: telemetry-events-processor
+          image: ihorlapka/iot-telemetry-event-processor:latest
           ports:
-            - containerPort: 8086
+            - containerPort: 8085
           volumeMounts:
             - name: app-config
               mountPath: /config/application.yaml
@@ -23,12 +22,6 @@ spec:
               value: "file:/config/"
             - name: SPRING_PROFILES_ACTIVE
               value: "dev"
-            - name: USERNAME
-              value: "simulator_app"
-            - name: PASSWORD
-              value: "simulator_123"
-            - name: REGISTRY_BASE_URL
-              value: "http://registry-svc-dev:8080"
           resources:
             limits:
               memory: 1Gi
@@ -38,17 +31,17 @@ spec:
               cpu: 250m
           readinessProbe:
             httpGet:
-              path: /iot-device-connector/actuator/health/readiness
-              port: 8086
-            initialDelaySeconds: 60
+              path: /tep/actuator/health/readiness
+              port: 8085
+            initialDelaySeconds: 30
             periodSeconds: 5
             timeoutSeconds: 2
             failureThreshold: 6
           livenessProbe:
             httpGet:
-              path: /iot-device-connector/actuator/health/liveness
-              port: 8086
-            initialDelaySeconds: 80
+              path: /tep/actuator/health/liveness
+              port: 8085
+            initialDelaySeconds: 300
             periodSeconds: 10
             timeoutSeconds: 2
             failureThreshold: 6
@@ -57,4 +50,4 @@ spec:
       volumes:
         - name: app-config
           configMap:
-            name: simulator-config
+            name: telemetry-events-processor-config

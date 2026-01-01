@@ -1,0 +1,10 @@
+resources:
+  - ../../base
+
+nameSuffix:
+  -dev
+
+configMapGenerator:
+  - name: telemetry-events-processor-config
+    files:
+      - application.yaml
