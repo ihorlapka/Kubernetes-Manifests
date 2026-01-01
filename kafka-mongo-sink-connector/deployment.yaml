@@ -1,0 +1,118 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-mongo-connector
+spec:
+  replicas: 1
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9100"
+    spec:
+      initContainers:
+        - name: download-mongo-sink
+          image: curlimages/curl:8.6.0
+          command:
+            - sh
+            - -c
+            - |
+              set -e
+              echo "Downloading MongoDB Kafka Sink..."
+              curl -L \
+                -o /plugins/mongo-kafka-connect.jar \
+                https://repo1.maven.org/maven2/org/mongodb/kafka/mongo-kafka-connect/2.0.1/mongo-kafka-connect-2.0.1-all.jar
+          volumeMounts:
+            - name: connect-plugins
+              mountPath: /plugins
+        - name: download-jmx-agent
+          image: curlimages/curl:8.6.0
+          command:
+            - sh
+            - -c
+            - |
+              set -e
+              curl -L \
+                -o /jmx/jmx_prometheus_javaagent-1.0.1.jar \
+                https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/1.0.1/jmx_prometheus_javaagent-1.0.1.jar
+          volumeMounts:
+            - name: jmx
+              mountPath: /jmx
+      containers:
+        - name: kafka-mongo-connector
+          image: confluentinc/cp-kafka-connect:7.9.0
+          ports:
+            - containerPort: 8083
+            - containerPort: 9100
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              cpu: "1"
+              memory: "2Gi"
+          env:
+            - name: CONNECT_BOOTSTRAP_SERVERS
+              value: "kafka-svc:9092"
+            - name: CONNECT_GROUP_ID
+              value: "kafka-mongo-sink"
+            - name: CONNECT_CONFIG_STORAGE_TOPIC
+              value: "connect-configs"
+            - name: CONNECT_OFFSET_STORAGE_TOPIC
+              value: "connect-offsets"
+            - name: CONNECT_STATUS_STORAGE_TOPIC
+              value: "connect-status"
+            - name: CONNECT_KEY_CONVERTER
+              value: "org.apache.kafka.connect.storage.StringConverter"
+            - name: CONNECT_VALUE_CONVERTER
+              value: "io.confluent.connect.avro.AvroConverter"
+            - name: CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL
+              value: "http://schema-registry-svc:8081"
+            - name: CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR
+              value: "1"
+            - name: CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR
+              value: "1"
+            - name: CONNECT_STATUS_STORAGE_REPLICATION_FACTOR
+              value: "1"
+            - name: CONNECT_REST_ADVERTISED_HOST_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: CONNECT_PLUGIN_PATH
+              value: "/usr/share/java,/plugins"
+            # JMX Prometheus exporter
+            - name: KAFKA_OPTS
+              value: >-
+                -javaagent:/jmx/jmx_prometheus_javaagent-1.0.1.jar=9100:/jmx/jmx-config.yaml
+          volumeMounts:
+            - name: connect-plugins
+              mountPath: /plugins
+            - name: jmx
+              mountPath: /jmx
+            - name: jmx-config
+              mountPath: /jmx/jmx-config.yaml
+              subPath: jmx-config.yaml
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8083
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /connectors
+              port: 8083
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
+      volumes:
+        - name: connect-plugins
+          emptyDir: { }
+        - name: jmx
+          emptyDir: { }
+        - name: jmx-config
+          configMap:
+            name: kafka-connect-jmx-config

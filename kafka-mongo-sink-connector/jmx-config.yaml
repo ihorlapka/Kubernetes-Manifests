@@ -1,0 +1,41 @@
+startDelaySeconds: 0
+ssl: false
+lowercaseOutputName: true
+lowercaseOutputLabelNames: true
+rules:
+  - pattern: 'kafka.connect<type=connector-task-metrics, connector=(.+), task=(.+)><>(.+):'
+    name: "kafka_connect_task_$3"
+    labels:
+      connector: "$1"
+      task: "$2"
+  - pattern: 'kafka.connect<type=connector-metrics, connector=(.+)><>(.+):'
+    name: "kafka_connect_connector_$2"
+    labels:
+      connector: "$1"
+  - pattern: "kafka.connect<type=connect-worker-metrics, client-id=(.+)>([^:]+)"
+    name: "kafka_connect_worker_$2"
+    labels:
+      client_id: "$1"
+  - pattern: "kafka.consumer<type=consumer-fetch-manager-metrics, client-id=([^,]+), topic=([^,]+), partition=([^>]+)><>([^:]+)"
+    name: "kafka_consumer_$4"
+    labels:
+      client_id: "$1"
+      topic: "$2"
+      partition: "$3"
+  - pattern: "java.lang<name=([^,]+), type=GarbageCollector><>CollectionCount"
+    name: "jvm_gc_collection_count"
+    labels:
+      name: "$1"
+  - pattern: "java.lang<name=([^,]+), type=GarbageCollector><>CollectionTime"
+    name: "jvm_gc_collection_time"
+    labels:
+      name: "$1"
+  - pattern: "java.lang<type=Memory><>HeapMemoryUsage"
+    name: "jvm_memory_bytes"
+    labels:
+      area: "heap"
+  - pattern: "com.mongodb.kafka.connect<type=sink-task-metrics, connector=([^,]+), task=([^>]+)><>([^:]+)"
+    name: "mongodb_sink_task_$3"
+    labels:
+      connector_name: "$1"
+      task_id: "$2"

@@ -1,0 +1,13 @@
+resources:
+  - deployment.yaml
+  - service.yaml
+
+labels:
+  - pairs:
+      app: kafka-mongo-sink
+    includeSelectors: true
+
+configMapGenerator:
+  - name: kafka-connect-jmx-config
+    files:
+      - jmx-config.yaml
