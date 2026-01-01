@@ -4,13 +4,7 @@ metadata:
   name: schema-registry
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      app: schema-registry
   template:
-    metadata:
-      labels:
-        app: schema-registry
     spec:
       containers:
         - name: schema-registry

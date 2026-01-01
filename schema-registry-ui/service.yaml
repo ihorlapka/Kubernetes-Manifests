@@ -3,8 +3,6 @@ kind: Service
 metadata:
   name: schema-registry-ui-svc
 spec:
-  selector:
-    app: schema-registry-ui
   ports:
     - port: 8000
       targetPort: 8000

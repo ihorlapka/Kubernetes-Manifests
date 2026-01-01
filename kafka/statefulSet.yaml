@@ -5,13 +5,7 @@ metadata:
 spec:
   serviceName: kafka-svc
   replicas: 1
-  selector:
-    matchLabels:
-      app: kafka
   template:
-    metadata:
-      labels:
-        app: kafka
     spec:
       containers:
         - name: kafka

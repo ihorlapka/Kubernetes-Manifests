@@ -4,8 +4,6 @@ metadata:
   name: kafka-svc
 spec:
   type: ClusterIP
-  selector:
-    app: kafka
   ports:
     - name: kafka
       protocol: TCP
