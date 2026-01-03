@@ -2,14 +2,17 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: kafka-mongo-sink-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   ingressClassName: nginx
   rules:
     - host: iot.local
       http:
         paths:
-          - path: /
-            pathType: Prefix
+          - pathType: ImplementationSpecific
+            path: /kafka-mongo-sink(/|$)(.*)
             backend:
               service:
                 name: kafka-mongo-sink-svc
