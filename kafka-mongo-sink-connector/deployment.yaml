@@ -11,7 +11,7 @@ spec:
         prometheus.io/port: "9100"
     spec:
       initContainers:
-        - name: download-mongo-sink
+        - name: download-mongo-kafka-sink-and-jmx-agent
           image: curlimages/curl:8.6.0
           command:
             - sh
@@ -22,20 +22,15 @@ spec:
               curl -L \
                 -o /plugins/mongo-kafka-connect.jar \
                 https://repo1.maven.org/maven2/org/mongodb/kafka/mongo-kafka-connect/2.0.1/mongo-kafka-connect-2.0.1-all.jar
-          volumeMounts:
-            - name: connect-plugins
-              mountPath: /plugins
-        - name: download-jmx-agent
-          image: curlimages/curl:8.6.0
-          command:
-            - sh
-            - -c
-            - |
               set -e
               curl -L \
                 -o /jmx/jmx_prometheus_javaagent-1.0.1.jar \
                 https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/1.0.1/jmx_prometheus_javaagent-1.0.1.jar
+              echo "Artifacts downloaded:"
+              ls -lh /plugins /jmx
           volumeMounts:
+            - name: connect-plugins
+              mountPath: /plugins
             - name: jmx
               mountPath: /jmx
       containers:
@@ -82,8 +77,7 @@ spec:
               value: "/usr/share/java,/plugins"
             # JMX Prometheus exporter
             - name: KAFKA_OPTS
-              value: >-
-                -javaagent:/jmx/jmx_prometheus_javaagent-1.0.1.jar=9100:/jmx/jmx-config.yaml
+              value: "-javaagent:/jmx/jmx_prometheus_javaagent-1.0.1.jar=9100:/jmx/jmx-config.yaml"
           volumeMounts:
             - name: connect-plugins
               mountPath: /plugins

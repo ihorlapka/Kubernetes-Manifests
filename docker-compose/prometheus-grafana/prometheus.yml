@@ -16,4 +16,11 @@ scrape_configs:
   - job_name: 'analytic-visualisation-service-app'
     metrics_path: '/avs/actuator/prometheus'
     static_configs:
-      - targets: ['${HOSTNAME}:8083']
+      - targets: ['${HOSTNAME}:8084']
+  - job_name: 'telemetry-events-processor-app'
+    metrics_path: '/tep/actuator/prometheus'
+    static_configs:
+      - targets: ['${HOSTNAME}:8085']
+  - job_name: 'kafka-mongo-alerts-sink'
+    static_configs:
+      - targets: ['${HOSTNAME}:9100']
