@@ -3,6 +3,9 @@ resources:
   - service.yaml
   - ingress.yaml
   - cm.yaml
+  - serviceAccount.yaml
+  - clusterRole.yaml
+  - clusterRoleBinding.yaml
 
 labels:
   - pairs:

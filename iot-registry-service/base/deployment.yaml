@@ -5,6 +5,11 @@ metadata:
 spec:
   replicas: 1
   template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/iot-registry/actuator/prometheus"
     spec:
       containers:
         - name: registry-service
