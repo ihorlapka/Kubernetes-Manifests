@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-svc
+spec:
+  clusterIP: None
+  ports:
+    - port: 9090

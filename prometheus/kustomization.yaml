@@ -1,0 +1,10 @@
+resources:
+  - statefulSet.yaml
+  - service.yaml
+  - ingress.yaml
+  - cm.yaml
+
+labels:
+  - pairs:
+      app: prometheus
+    includeSelectors: true

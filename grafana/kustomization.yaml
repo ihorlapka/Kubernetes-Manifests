@@ -1,0 +1,9 @@
+resources:
+  - statefulSet.yaml
+  - service.yaml
+  - ingress.yaml
+
+labels:
+  - pairs:
+      app: grafana
+    includeSelectors: true
