@@ -5,6 +5,11 @@ metadata:
 spec:
   replicas: 1
   template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8085"
+        prometheus.io/path: "/tep/actuator/prometheus"
     spec:
       containers:
         - name: telemetry-events-processor

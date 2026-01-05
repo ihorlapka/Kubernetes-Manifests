@@ -5,6 +5,11 @@ metadata:
 spec:
   replicas: 1
   template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8084"
+        prometheus.io/path: "/avs/actuator/prometheus"
     spec:
       containers:
         - name: analytics-visualisation-service

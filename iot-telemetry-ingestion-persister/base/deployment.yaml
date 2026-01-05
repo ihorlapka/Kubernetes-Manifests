@@ -5,6 +5,11 @@ metadata:
 spec:
   replicas: 1
   template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8082"
+        prometheus.io/path: "/telemetries-persister/actuator/prometheus"
     spec:
       containers:
         - name: telemetries-persister
