@@ -5,4 +5,5 @@ resources:
 labels:
   - pairs:
       app: analytics-visualisation-service-dev
+      scrape_logs: "true"
     includeSelectors: true

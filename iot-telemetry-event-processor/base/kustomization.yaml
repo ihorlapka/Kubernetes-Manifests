@@ -5,4 +5,5 @@ resources:
 labels:
   - pairs:
       app: telemetry-events-processor-dev
+      scrape_logs: "true"
     includeSelectors: true

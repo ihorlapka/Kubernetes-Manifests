@@ -6,6 +6,7 @@ resources:
 labels:
   - pairs:
       app: kafka-mongo-sink
+      scrape_logs: "true"
     includeSelectors: true
 
 configMapGenerator:
