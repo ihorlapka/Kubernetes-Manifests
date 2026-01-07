@@ -10,6 +10,8 @@ spec:
       containers:
         - name: mongodb
           image: mongo:7.0.28
+          args:
+            - "--bind_ip_all"
           ports:
             - containerPort: 27017
           envFrom:
@@ -27,13 +29,10 @@ spec:
             initialDelaySeconds: 30
             periodSeconds: 10
           livenessProbe:
-            exec:
-              command:
-                - mongosh
-                - --eval
-                - db.adminCommand('ping')
+            tcpSocket:
+              port: 27017
             initialDelaySeconds: 60
-            periodSeconds: 20
+            periodSeconds: 30
   volumeClaimTemplates:
     - metadata:
         name: mongo-data

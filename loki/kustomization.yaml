@@ -1,9 +1,9 @@
 resources:
-  - deployment.yaml
+  - statefulSet.yaml
   - service.yaml
+  - cm.yaml
 
 labels:
   - pairs:
-      app: registry-dev
-      scrape_logs: "true"
+      app: loki
     includeSelectors: true
