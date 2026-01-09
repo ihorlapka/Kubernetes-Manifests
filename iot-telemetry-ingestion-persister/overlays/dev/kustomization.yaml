@@ -9,3 +9,7 @@ configMapGenerator:
   - name: telemetries-persister-config
     files:
       - application.yaml
+
+images:
+  - name: ihorlapka/iot-telemetry-ingestion-service
+    newTag: "1"
