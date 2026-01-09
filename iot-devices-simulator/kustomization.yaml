@@ -1,3 +1,6 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
 resources:
   - deployment.yaml
   - service.yaml
@@ -16,3 +19,7 @@ configMapGenerator:
   - name: simulator-config
     files:
       - application.yaml
+
+images:
+  - name: ihorlapka/iot-simulator
+    newTag: "1"

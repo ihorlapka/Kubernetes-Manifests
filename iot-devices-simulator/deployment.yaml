@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
         - name: simulator
-          image: ihorlapka/iot-simulator:latest
+          image: ihorlapka/iot-simulator
           imagePullPolicy: Always
           ports:
             - containerPort: 8086
