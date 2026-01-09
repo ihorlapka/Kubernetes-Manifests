@@ -1,3 +1,6 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
 resources:
   - ../../base
   - ingress.yaml
@@ -9,3 +12,7 @@ configMapGenerator:
   - name: analytics-visualisation-config
     files:
       - application.yaml
+
+images:
+  - name: ihorlapka/iot-analytics-visualisation-service
+    newTag: "1"
