@@ -7,3 +7,6 @@ labels:
       app: registry-dev
       scrape_logs: "true"
     includeSelectors: true
+
+images:
+  - name: ihorlapka/iot-registry-service
