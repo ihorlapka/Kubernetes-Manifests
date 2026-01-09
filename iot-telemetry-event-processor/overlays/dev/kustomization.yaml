@@ -13,4 +13,4 @@ configMapGenerator:
 
 images:
 - name: ihorlapka/iot-telemetry-event-processor
-  newTag: "12"
+  newTag: "15"
