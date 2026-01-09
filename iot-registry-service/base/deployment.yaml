@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
         - name: registry-service
-          image: ihorlapka/iot-registry-service:latest
+          image: ihorlapka/iot-registry-service:1
           ports:
             - containerPort: 8080
           volumeMounts:
