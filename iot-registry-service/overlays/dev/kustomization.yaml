@@ -9,3 +9,7 @@ configMapGenerator:
   - name: registry-config
     files:
       - application.yaml
+
+images:
+  - name: ihorlapka/iot-registry-service
+    newTag: "1"
