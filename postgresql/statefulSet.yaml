@@ -34,7 +34,7 @@ spec:
               command:
                 - sh
                 - -c
-                - pg_isready -h 127.0.0.1 -p 5432 -U ihor
+                - pg_isready -h 127.0.0.1 -p 5432 -U ihor -d iot_registry
             initialDelaySeconds: 10
             periodSeconds: 5
             timeoutSeconds: 3
@@ -44,7 +44,7 @@ spec:
                 command:
                   - sh
                   - -c
-                  - pg_isready -h 127.0.0.1 -p 5432 -U ihor
+                  - pg_isready -h 127.0.0.1 -p 5432 -U ihor -d iot_registry
               initialDelaySeconds: 30
               periodSeconds: 10
               timeoutSeconds: 5
