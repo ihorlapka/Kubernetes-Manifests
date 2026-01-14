@@ -14,4 +14,4 @@ configMapGenerator:
 
 images:
 - name: ihorlapka/iot-telemetry-ingestion-service
-  newTag: "26"
+  newTag: "27"
