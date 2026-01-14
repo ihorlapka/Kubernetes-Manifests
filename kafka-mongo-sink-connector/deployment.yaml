@@ -39,13 +39,6 @@ spec:
           ports:
             - containerPort: 8083
             - containerPort: 9100
-          resources:
-            requests:
-              cpu: "500m"
-              memory: "1Gi"
-            limits:
-              cpu: "1"
-              memory: "2Gi"
           env:
             - name: CONNECT_BOOTSTRAP_SERVERS
               value: "kafka-svc:9092"
@@ -86,6 +79,13 @@ spec:
             - name: jmx-config
               mountPath: /jmx/jmx-config.yaml
               subPath: jmx-config.yaml
+          resources:
+            limits:
+              memory: 1Gi
+              cpu: 2
+            requests:
+              memory: 1Gi
+              cpu: 1
           livenessProbe:
             httpGet:
               path: /

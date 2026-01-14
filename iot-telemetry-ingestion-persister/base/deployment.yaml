@@ -23,7 +23,7 @@ spec:
               subPath: application.yaml
           env:
             - name: JAVA_OPTS
-              value: "-Xms512m -Xmx1024m -XX:+UseG1GC"
+              value: "-Xms700m -Xmx700m -XX:+UseG1GC -XX:ParallelGCThreads=2 -XX:ConcGCThreads=1 -XX:MaxDirectMemorySize=128m -Xlog:gc*,gc+heap=info"
             - name: SPRING_CONFIG_LOCATION
               value: "file:/config/"
             - name: SPRING_PROFILES_ACTIVE
@@ -41,10 +41,10 @@ spec:
           resources:
             limits:
               memory: 1Gi
-              cpu: 500m
+              cpu: 2
             requests:
-              memory: 512Mi
-              cpu: 250m
+              memory: 1Gi
+              cpu: 1
           readinessProbe:
             httpGet:
               path: /telemetries-persister/actuator/health/readiness
