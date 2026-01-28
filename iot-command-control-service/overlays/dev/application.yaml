@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: command-control-service
+server:
+  port: 8087
+  servlet:
+    context-path: /iot-commands
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+kafka:
+  producer:
+    topic: iot-devices-commands
+    executor-termination-timeout-ms: 5000
+    properties:
+      bootstrap.servers: localhost:9092
+      key.serializer: org.apache.kafka.common.serialization.StringSerializer
+      value.serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      schema.registry.url: http://localhost:8081
+      value.subject.name.strategy: io.confluent.kafka.serializers.subject.RecordNameStrategy
+      auto.register.schemas: false
+      acks: all
+      linger.ms: 10
+      compression.type: snappy
+      retries: 3
+      retry.backoff.ms: 100
+      request.timeout.ms: 15000
+      delivery.timeout.ms: 30000
+      client.id: commands-control-producer

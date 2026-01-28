@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: command-control-service-ingress
+spec:
+  rules:
+    - host: iot.local
+      http:
+        paths:
+          - path: /iot-commands
+            pathType: Prefix
+            backend:
+              service:
+                name: command-control-svc-dev
+                port:
+                  number: 8087
