@@ -6,5 +6,5 @@ spec:
   type: ClusterIP
   ports:
     - protocol: TCP
-      port: 8086
-      targetPort: 8086
+      port: 8087
+      targetPort: 8087
