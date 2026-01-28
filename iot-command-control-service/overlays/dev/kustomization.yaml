@@ -14,4 +14,4 @@ configMapGenerator:
 
 images:
 - name: ihorlapka/iot-command-control-service
-  newTag: "4"
+  newTag: "6"
