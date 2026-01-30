@@ -11,6 +11,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: command-control-svc-dev
+                name: command-control-service-svc-dev
                 port:
                   number: 8087
