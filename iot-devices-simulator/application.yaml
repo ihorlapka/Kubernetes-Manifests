@@ -14,6 +14,26 @@ management:
     health:
       show-details: always
 kafka:
+  consumer:
+    topic: iot-devices-commands
+    dead-letter_topic: iot-devices-commands-dead-letters
+    retry-interval-ms: 500
+    retries: 3
+    executor-termination-timeout-ms: 5000
+    properties:
+      bootstrap.servers: kafka-svc:9092
+      group.id: iot-devices-commands
+      key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value.deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      schema.registry.url: http://schema-registry-svc:8081
+      specific.avro.reader: true
+      auto.offset.reset: earliest
+      enable.auto.commit: false
+      max.poll.records: 1000
+      max.poll.interval: 300000
+      fetch.min.bytes: 1
+      fetch.max.wait.ms: 500
+      value.subject.name.strategy: io.confluent.kafka.serializers.subject.RecordNameStrategy
   producer:
     topic: iot-devices-data
     properties:
