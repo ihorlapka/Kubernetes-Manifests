@@ -17,9 +17,9 @@ kafka:
   consumer:
     topic: iot-devices-commands
     dead-letter_topic: iot-devices-commands-dead-letters
-    retry-interval-ms: 500
+    retry-interval-ms: 1000
     retries: 3
-    executor-termination-timeout-ms: 5000
+    poll-timeout-ms: 500
     properties:
       bootstrap.servers: kafka-svc:9092
       group.id: iot-devices-commands
