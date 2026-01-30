@@ -21,4 +21,4 @@ configMapGenerator:
 
 images:
 - name: ihorlapka/iot-simulator
-  newTag: "48"
+  newTag: "49"
