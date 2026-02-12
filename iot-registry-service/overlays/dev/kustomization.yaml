@@ -14,4 +14,4 @@ configMapGenerator:
 
 images:
 - name: ihorlapka/iot-registry-service
-  newTag: "104"
+  newTag: "105"
