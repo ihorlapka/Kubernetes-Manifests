@@ -32,8 +32,8 @@ spec:
               memory: 1Gi
               cpu: 1
             requests:
-              memory: 1Gi
-              cpu: 500m
+              memory: 128Mi
+              cpu: 128m
           readinessProbe:
             httpGet:
               path: /tep/actuator/health/readiness

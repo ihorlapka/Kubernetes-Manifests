@@ -53,8 +53,8 @@ spec:
               memory: 1Gi
               cpu: 2
             requests:
-              memory: 1Gi
-              cpu: 1
+              memory: 128Mi
+              cpu: 128m
           readinessProbe:
             httpGet:
               path: /avs/actuator/health/readiness

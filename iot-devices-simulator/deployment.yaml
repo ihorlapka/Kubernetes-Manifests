@@ -34,8 +34,8 @@ spec:
               memory: 512Mi
               cpu: 500m
             requests:
-              memory: 512Mi
-              cpu: 500m
+              memory: 128Mi
+              cpu: 128m
           readinessProbe:
             httpGet:
               path: /iot-device-connector/actuator/health/readiness
