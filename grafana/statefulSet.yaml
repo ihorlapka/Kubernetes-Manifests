@@ -4,7 +4,7 @@ metadata:
   name: grafana
 spec:
   serviceName: grafana-svc
-  replicas: 1
+  replicas: 0
   template:
     spec:
       containers:

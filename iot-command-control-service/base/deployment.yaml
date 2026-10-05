@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: command-control-service
 spec:
-  replicas: 1
+  replicas: 0
   template:
     spec:
       containers:
